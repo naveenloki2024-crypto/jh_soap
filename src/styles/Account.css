@@ -1,0 +1,550 @@
+.account-page {
+  min-height: calc(100dvh - 6rem);
+  padding: clamp(2rem, 6vw, 5rem) 1.25rem;
+  background: radial-gradient(circle at 50% 0%, rgba(248, 238, 214, 0.9), var(--color-warm-cream));
+}
+
+.account-shell {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(240px, 280px) 1fr;
+  gap: clamp(1.8rem, 5vw, 3rem);
+  align-items: start;
+}
+
+@media (max-width: 920px) {
+  .account-shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+.account-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  padding: 1.8rem;
+  border-radius: 1.2rem;
+  background: radial-gradient(circle at 100% 0%, rgba(248, 238, 214, 0.98), #fffaf1);
+  border: 1px solid rgba(56, 95, 42, 0.16);
+  box-shadow: 0 70px 120px -80px rgba(38, 63, 32, 0.95);
+  position: sticky;
+  top: calc(6rem + 1rem);
+}
+
+@media (max-width: 920px) {
+  .account-sidebar {
+    position: static;
+  }
+}
+
+.account-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.account-identity-avatar {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(56, 95, 42, 0.2);
+}
+
+.account-identity-avatar--initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-forest-green);
+  color: var(--color-warm-cream);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.account-identity-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  color: var(--color-forest-green);
+}
+
+.account-identity-email {
+  font-size: 0.95rem;
+  color: rgba(75, 43, 19, 0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.account-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.8rem;
+  text-decoration: none;
+  color: rgba(75, 43, 19, 0.75);
+  font-weight: 500;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.account-nav-link svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.account-nav-link:hover,
+.account-nav-link:focus-visible {
+  background: rgba(100, 124, 55, 0.12);
+  color: var(--color-forest-green);
+}
+
+.account-nav-link.active {
+  background: linear-gradient(120deg, rgba(100, 124, 55, 0.95), rgba(56, 95, 42, 0.95));
+  color: var(--color-warm-cream);
+}
+
+.account-signout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.8rem;
+  border: none;
+  background: transparent;
+  color: rgba(75, 43, 19, 0.7);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.account-signout:hover,
+.account-signout:focus-visible {
+  background: rgba(180, 83, 9, 0.12);
+  color: #7c2d12;
+}
+
+.account-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.account-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  padding: clamp(2rem, 5vw, 3rem);
+  border-radius: 1.2rem;
+  background: radial-gradient(circle at 100% 0%, rgba(248, 238, 214, 0.98), #fffaf1);
+  border: 1px solid rgba(56, 95, 42, 0.16);
+  box-shadow: 0 80px 140px -90px rgba(38, 63, 32, 0.95);
+}
+
+.account-panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.account-panel-title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 2.6rem);
+  color: var(--color-forest-green);
+}
+
+.account-panel-subtitle {
+  margin: 0;
+  color: rgba(75, 43, 19, 0.7);
+  line-height: 1.7;
+}
+
+.account-verify-banner {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(180, 83, 9, 0.4);
+  background: rgba(180, 83, 9, 0.12);
+  color: #7c2d12;
+  align-items: flex-start;
+}
+
+.account-verify-title {
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+}
+
+.account-verify-text {
+  margin: 0 0 0.6rem;
+  color: rgba(124, 45, 18, 0.85);
+}
+
+.account-verify-ok {
+  font-weight: 500;
+}
+
+.account-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.account-meta {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(75, 43, 19, 0.6);
+}
+
+.account-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: clamp(2rem, 5vw, 3rem);
+}
+
+.account-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 1px solid rgba(56, 95, 42, 0.25);
+  color: var(--color-forest-green);
+  box-shadow: 0 40px 70px -50px rgba(38, 63, 32, 0.9);
+}
+
+.account-empty-title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  color: var(--color-forest-green);
+}
+
+.account-empty-text {
+  margin: 0;
+  color: rgba(75, 43, 19, 0.75);
+  line-height: 1.8;
+}
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.6rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(56, 95, 42, 0.16);
+  background: radial-gradient(circle at 100% 0%, rgba(248, 238, 214, 0.98), #fffaf1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  box-shadow: 0 60px 110px -80px rgba(38, 63, 32, 0.95);
+}
+
+.order-card:hover,
+.order-card:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 70px 120px -80px rgba(38, 63, 32, 0.95);
+  border-color: rgba(100, 124, 55, 0.8);
+}
+
+.order-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.order-card-number {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  color: var(--color-forest-green);
+}
+
+.order-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.order-badge--pending {
+  background: rgba(214, 208, 191, 0.6);
+  color: rgba(75, 43, 19, 0.75);
+}
+
+.order-badge--progress {
+  background: rgba(100, 124, 55, 0.16);
+  color: var(--color-forest-green);
+  border-color: rgba(100, 124, 55, 0.5);
+}
+
+.order-badge--done {
+  background: rgba(56, 95, 42, 0.16);
+  color: var(--color-forest-green);
+  border-color: rgba(56, 95, 42, 0.5);
+}
+
+.order-badge--cancelled {
+  background: rgba(180, 83, 9, 0.14);
+  color: #7c2d12;
+  border-color: rgba(180, 83, 9, 0.5);
+}
+
+.order-card-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.95rem;
+  color: rgba(75, 43, 19, 0.7);
+  flex-wrap: wrap;
+}
+
+.order-card-body {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.order-card-thumbs {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.order-thumb {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(56, 95, 42, 0.18);
+  background: #fff;
+}
+
+.order-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.order-thumb--empty {
+  background: rgba(214, 208, 191, 0.4);
+}
+
+.order-thumb--more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(75, 43, 19, 0.7);
+  background: rgba(248, 238, 214, 0.8);
+}
+
+.order-card-total {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  color: var(--color-forest-green);
+}
+
+.order-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-forest-green);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.account-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-forest-green);
+  font-weight: 500;
+  text-decoration: underline;
+  align-self: flex-start;
+}
+
+.order-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.order-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.4rem, 4vw, 2rem);
+}
+
+@media (max-width: 1080px) {
+  .order-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.account-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  padding: 1.8rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(56, 95, 42, 0.16);
+  background: radial-gradient(circle at 100% 0%, rgba(248, 238, 214, 0.98), #fffaf1);
+  box-shadow: 0 60px 110px -80px rgba(38, 63, 32, 0.95);
+}
+
+.account-card-title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  color: var(--color-forest-green);
+}
+
+.order-detail-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-detail-item {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.order-detail-img {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(56, 95, 42, 0.18);
+  background: #fff;
+}
+
+.order-detail-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.order-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.order-detail-name {
+  font-weight: 500;
+  color: var(--color-forest-green);
+}
+
+.order-detail-qty {
+  font-size: 0.95rem;
+  color: rgba(75, 43, 19, 0.7);
+}
+
+.order-detail-line {
+  font-weight: 500;
+  color: var(--color-forest-green);
+}
+
+.order-detail-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(56, 95, 42, 0.14);
+}
+
+.order-detail-row {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(75, 43, 19, 0.75);
+}
+
+.order-detail-row--discount {
+  color: rgba(75, 43, 19, 0.7);
+}
+
+.order-detail-row--grand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  color: var(--color-forest-green);
+}
+
+.order-detail-payment {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(75, 43, 19, 0.7);
+}
+
+.order-detail-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-detail-details li {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  color: rgba(75, 43, 19, 0.75);
+  line-height: 1.7;
+}
+
+.order-detail-details li svg {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.2rem;
+  color: var(--color-forest-green);
+}
+
+.order-detail-notes {
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(56, 95, 42, 0.14);
+  color: rgba(75, 43, 19, 0.75);
+}

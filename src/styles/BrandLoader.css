@@ -1,0 +1,115 @@
+/* ==================================================================
+   Botanical brand loader — inline by default, fullscreen overlay when
+   `.brand-loader--fullscreen` is present. Purely decorative animation
+   is disabled under prefers-reduced-motion (see index.css).
+   ================================================================== */
+
+.brand-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.brand-loader--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  padding: 0 1.5rem;
+  background: radial-gradient(circle at 50% 22%, rgba(248, 238, 214, 0.92), var(--color-warm-cream));
+}
+
+.brand-loader-mark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.75rem;
+  height: 4.75rem;
+  border-radius: 50%;
+  background: #fffaf1;
+  border: 1px solid rgba(56, 95, 42, 0.22);
+  box-shadow: 0 50px 80px -60px rgba(38, 63, 32, 0.95);
+  animation: brand-loader-fade 480ms ease both;
+}
+
+.brand-loader-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(100, 124, 55, 0.18);
+  border-top-color: var(--color-natural-leaf);
+  animation: brand-loader-spin 900ms linear infinite;
+}
+
+.brand-loader-leaf {
+  position: absolute;
+  color: var(--color-natural-leaf);
+  animation: brand-loader-sway 2.4s ease-in-out infinite;
+}
+
+.brand-loader-leaf--a {
+  top: -0.55rem;
+  right: 0.15rem;
+  transform: rotate(24deg);
+}
+
+.brand-loader-leaf--b {
+  bottom: -0.45rem;
+  left: 0.1rem;
+  transform: rotate(-18deg);
+  animation-delay: 0.4s;
+  color: var(--color-deep-olive);
+}
+
+.brand-loader-logo {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.brand-loader-tagline {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--color-forest-green);
+  animation: brand-loader-fade 560ms ease 100ms both;
+}
+
+.brand-loader-label {
+  font-size: 0.92rem;
+  color: rgba(75, 43, 19, 0.68);
+  animation: brand-loader-fade 560ms ease 180ms both;
+}
+
+@keyframes brand-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes brand-loader-sway {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -3px;
+  }
+}
+
+@keyframes brand-loader-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

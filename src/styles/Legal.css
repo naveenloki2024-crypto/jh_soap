@@ -1,0 +1,56 @@
+.legal-page,
+.notfound-page {
+  min-height: calc(100dvh - 6rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem) 1.25rem;
+  background: radial-gradient(circle at 50% 0%, rgba(248, 238, 214, 0.9), var(--color-warm-cream));
+  text-align: center;
+}
+
+.legal-shell,
+.notfound-page {
+  width: min(640px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.legal-mark,
+.notfound-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  border: 1px solid rgba(56, 95, 42, 0.25);
+  color: var(--color-forest-green);
+  box-shadow: 0 40px 70px -50px rgba(38, 63, 32, 0.9);
+}
+
+.legal-title,
+.notfound-title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 6vw, 2.9rem);
+  color: var(--color-forest-green);
+}
+
+.legal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  text-align: left;
+  color: rgba(75, 43, 19, 0.75);
+  line-height: 1.8;
+}
+
+.notfound-text {
+  margin: 0;
+  color: rgba(75, 43, 19, 0.75);
+  line-height: 1.8;
+}

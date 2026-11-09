@@ -1,0 +1,36 @@
+﻿.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 95, 42, 0.18);
+  background: rgba(248, 238, 214, 0.6);
+  color: var(--color-forest-green);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 140ms ease;
+  font-family: var(--font-sans);
+}
+
+.lang-switcher:hover,
+.lang-switcher:focus-visible {
+  background: rgba(100, 124, 55, 0.16);
+  border-color: rgba(56, 95, 42, 0.3);
+}
+
+.lang-text {
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .lang-switcher {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.8rem;
+  }
+  
+  .lang-text {
+    font-size: 0.8rem;
+  }
+}

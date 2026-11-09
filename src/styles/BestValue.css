@@ -1,0 +1,153 @@
+.best-value-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #263F20, #35451F);
+  color: var(--color-warm-cream);
+  border: 1px solid rgba(100, 124, 55, 0.5);
+  box-shadow: 0 4px 16px rgba(38, 63, 32, 0.18);
+  overflow: hidden;
+  height: 100%;
+  min-width: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.best-value-card::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  bottom: -40px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(100, 124, 55, 0.22);
+}
+
+.best-value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 34px rgba(38, 63, 32, 0.28);
+}
+
+.best-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--color-natural-leaf);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  z-index: 1;
+}
+
+.best-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(248, 238, 214, 0.14);
+  color: var(--color-warm-cream);
+  margin-top: 1rem;
+}
+
+.best-title {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.best-desc {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(248, 238, 214, 0.88);
+  flex: 1;
+}
+
+.best-math {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.best-math-chip {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(248, 238, 214, 0.1);
+  border: 1px solid rgba(200, 224, 185, 0.25);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.best-math-save {
+  color: #A9D08B;
+  border-color: rgba(169, 208, 139, 0.5);
+}
+
+.best-math-op {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #C8E0B9;
+}
+
+.best-shop-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background-color: var(--color-natural-leaf);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.best-shop-btn:hover {
+  background-color: #52682D;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 720px) {
+  .best-value-card {
+    padding: 1.25rem;
+  }
+
+  .best-title {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .best-title {
+    font-size: 1.05rem;
+  }
+
+  .best-math {
+    gap: 0.35rem;
+  }
+
+  .best-math-chip {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.72rem;
+  }
+}
