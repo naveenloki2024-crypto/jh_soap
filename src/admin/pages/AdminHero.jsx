@@ -98,7 +98,7 @@ function HeroImageField({ label, hint, field, value, uploading, onChange, onUplo
             type="text"
             value={value}
             onChange={(event) => onChange(field, event.target.value)}
-            placeholder="https://… or /uploads/…"
+            placeholder="https://… or /api/uploads/…"
           />
           {hint ? <span className="admin-field-hint">{hint}</span> : null}
         </div>

@@ -1,5 +1,6 @@
 // Shared API base. In dev, Vite proxies /api to the Express server (see vite.config.js).
-// In production set VITE_API_URL to the deployed backend, e.g. https://api.jhsoaps.com/api
+// In production the same deployment serves the API (Vercel serverless function),
+// so the relative /api base keeps every request same-origin.
 export const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 function apiTarget() {
@@ -35,7 +36,7 @@ export async function apiRequest(
   } catch (cause) {
     if (cause?.name === 'AbortError') throw cause;
     const error = new Error(
-      `Cannot reach the JH Soaps API at ${apiTarget()}. Make sure the backend server is running on port 4000, then try again.`,
+      `Cannot reach the JH Soaps API at ${apiTarget()}. Please check your connection and try again.`,
     );
     error.status = 0;
     error.code = 'NETWORK_ERROR';

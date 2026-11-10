@@ -7,6 +7,7 @@ import { dirname, join } from 'node:path';
 import env from './config/env.js';
 import authRouter from './routes/auth.js';
 import productsRouter from './routes/products.js';
+import uploadsRouter from './routes/uploads.js';
 import heroRouter from './routes/hero.js';
 import ordersRouter from './routes/orders.js';
 import couponsRouter from './routes/coupons.js';
@@ -14,7 +15,7 @@ import paymentsRouter, { handleRazorpayWebhook, handleStripeWebhook } from './ro
 import meRouter from './routes/me.js';
 import adminRouter from './routes/admin.js';
 import { authenticate, requireAdmin } from './middleware/auth.js';
-import { isDatabaseConnected } from './config/database.js';
+import { ensureDatabaseConnection, isDatabaseConnected } from './config/database.js';
 import { checkDatabase } from './lib/db-health.js';
 import { toApiError } from './lib/db-errors.js';
 import { ApiError } from './lib/http.js';
@@ -24,6 +25,9 @@ const distPath = join(__dirname, '..', 'dist');
 
 const app = express();
 app.disable('x-powered-by');
+// Vercel terminates TLS at its edge; trust its forwarded client IP so the
+// rate limiter does not treat every visitor as the same proxy address.
+if (process.env.VERCEL) app.set('trust proxy', 1);
 
 const LOCAL_ORIGIN_RE = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i;
 
@@ -37,17 +41,23 @@ function corsOrigin(origin, callback) {
 
 app.use(cors({ origin: corsOrigin, credentials: true }));
 
-// Fail fast with a clear message while MongoDB is unreachable instead of
-// letting requests wait for the driver's server-selection timeout.
-app.use('/api', (req, res, next) => {
+// Serverless functions have no startup hook, so open the shared Mongoose
+// connection on the first API request and reuse it for warm invocations.
+// While Atlas is unreachable the request fails fast with a 503 instead of
+// waiting for the driver's server-selection timeout on every call.
+app.use('/api', async (req, res, next) => {
   if (req.path === '/health' || req.path === '/health/database') return next();
-  if (!isDatabaseConnected()) {
-    return res.status(503).json({
+  if (isDatabaseConnected()) return next();
+
+  try {
+    await ensureDatabaseConnection();
+    next();
+  } catch {
+    res.status(503).json({
       error: 'Database is temporarily unavailable. Please try again in a moment.',
       code: 'DATABASE_UNAVAILABLE',
     });
   }
-  next();
 });
 
 // Razorpay signs the raw request body, so this route must run before JSON parsing.
@@ -68,6 +78,9 @@ app.post(
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/api/health', async (_req, res) => {
+  // On a cold serverless instance this is often the first request, so attempt
+  // the shared connection before reporting status.
+  await ensureDatabaseConnection().catch(() => {});
   const database = await checkDatabase();
   res.status(database.connected ? 200 : 503).json({
     status: database.connected ? 'ok' : 'degraded',
@@ -76,12 +89,14 @@ app.get('/api/health', async (_req, res) => {
 });
 
 app.get('/api/health/database', async (_req, res) => {
+  await ensureDatabaseConnection().catch(() => {});
   const database = await checkDatabase();
   res.status(database.connected ? 200 : 503).json({ database });
 });
 
 app.use('/api/auth', authRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/uploads', uploadsRouter);
 app.use('/api/hero', heroRouter);
 app.use('/api/coupons', couponsRouter);
 app.use('/api/orders', ordersRouter);

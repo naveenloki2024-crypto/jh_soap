@@ -13,6 +13,17 @@ let listenersAttached = false;
 let connectPromise = null;
 let closing = false;
 
+// Vercel functions are short-lived and run behind a 30s request budget, so a
+// failed Atlas attempt should give up sooner than the local 20s default.
+const ON_VERCEL = Boolean(process.env.VERCEL);
+const DEFAULT_SERVER_SELECTION_TIMEOUT_MS = ON_VERCEL ? 8000 : 20000;
+const DEFAULT_CONNECT_TIMEOUT_MS = ON_VERCEL ? 8000 : 20000;
+
+// After a failed attempt, briefly fail fast instead of opening a new socket for
+// every concurrent request (a cold serverless instance can receive several).
+const CONNECT_FAILURE_BACKOFF_MS = 5000;
+let lastFailureAt = 0;
+
 function connectionErrorText(error) {
   const parts = [];
   const add = (value) => {
@@ -137,8 +148,9 @@ export async function connectDatabase(options = {}) {
     try {
       await mongoose.connect(uri, {
         dbName,
-        serverSelectionTimeoutMS: options.serverSelectionTimeoutMS ?? 20000,
-        connectTimeoutMS: options.connectTimeoutMS ?? 20000,
+        serverSelectionTimeoutMS:
+          options.serverSelectionTimeoutMS ?? DEFAULT_SERVER_SELECTION_TIMEOUT_MS,
+        connectTimeoutMS: options.connectTimeoutMS ?? DEFAULT_CONNECT_TIMEOUT_MS,
         socketTimeoutMS: options.socketTimeoutMS ?? 0,
         maxPoolSize: options.maxPoolSize ?? 10,
         minPoolSize: options.minPoolSize ?? 0,
@@ -160,12 +172,35 @@ export async function connectDatabase(options = {}) {
       throw error;
     }
 
+    lastFailureAt = 0;
     return mongoose.connection;
   })().finally(() => {
     connectPromise = null;
   });
 
   return connectPromise;
+}
+
+/**
+ * Serverless-safe connection helper used by request middleware.
+ *
+ * Vercel reuses a warm function instance, so the module-level Mongoose
+ * connection is shared across invocations and is only opened once. Concurrent
+ * requests share the in-flight connectPromise (handled by connectDatabase), and
+ * a short failure backoff avoids retry storms while Atlas is unreachable.
+ */
+export async function ensureDatabaseConnection() {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  if (lastFailureAt && Date.now() - lastFailureAt < CONNECT_FAILURE_BACKOFF_MS) {
+    throw new Error('Database connection is temporarily unavailable.');
+  }
+
+  try {
+    return await connectDatabase();
+  } catch (error) {
+    lastFailureAt = Date.now();
+    throw error;
+  }
 }
 
 export async function disconnectDatabase() {

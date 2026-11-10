@@ -1,12 +1,9 @@
 import { randomBytes } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import express, { Router } from 'express';
+import Upload from '../models/Upload.js';
 import { asyncHandler, badRequest } from '../lib/http.js';
 
 const router = Router();
-const uploadDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'uploads');
 
 const TYPES = {
   'image/jpeg': 'jpg',
@@ -40,10 +37,11 @@ function hasSignature(buffer, mime) {
   return false;
 }
 
-// POST /api/admin/uploads — raw image body. Returns a public /uploads URL.
+// POST /api/admin/uploads - raw image body. Returns a public /api/uploads URL.
+// Images are stored in MongoDB because Vercel functions cannot persist files.
 router.post(
   '/',
-  express.raw({ type: Object.keys(TYPES), limit: '5mb' }),
+  express.raw({ type: Object.keys(TYPES), limit: '4mb' }),
   asyncHandler(async (req, res) => {
     const mime = String(req.get('content-type') || '').split(';')[0].trim().toLowerCase();
     const extension = TYPES[mime];
@@ -51,17 +49,21 @@ router.post(
       throw badRequest('Unsupported image type. Use JPEG, PNG, WebP or GIF.');
     }
     if (!Buffer.isBuffer(req.body) || req.body.length === 0) {
-      throw badRequest('The uploaded image is empty or too large.');
+      throw badRequest('The uploaded image is empty or larger than 4 MB.');
     }
     if (!hasSignature(req.body, mime)) {
       throw badRequest('The uploaded file is not a valid image.');
     }
 
-    await mkdir(uploadDir, { recursive: true });
     const filename = `product-${Date.now()}-${randomBytes(6).toString('hex')}.${extension}`;
-    await writeFile(join(uploadDir, filename), req.body);
+    await Upload.create({
+      filename,
+      mimeType: mime,
+      size: req.body.length,
+      data: req.body,
+    });
 
-    res.status(201).json({ url: `/uploads/${filename}` });
+    res.status(201).json({ url: `/api/uploads/${filename}` });
   }),
 );
 

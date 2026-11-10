@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { Router } from 'express';
+import env from '../config/env.js';
 import Admin from '../models/Admin.js';
 import Customer from '../models/Customer.js';
 import {
@@ -248,7 +249,7 @@ router.post(
         },
       );
 
-      const resetUrl = `${process.env.PUBLIC_APP_URL || 'http://localhost:5173'}/reset-password?token=${encodeURIComponent(token)}`;
+      const resetUrl = `${env.PUBLIC_APP_URL}/reset-password?token=${encodeURIComponent(token)}`;
       await sendPasswordResetEmail({ to: customer.email, resetUrl });
     }
 

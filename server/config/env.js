@@ -46,11 +46,45 @@ export function loadEnv() {
   const mongoUri = read('MONGODB_URI') || read('MONGO_URI');
   if (!mongoUri) throw new Error('Missing required environment variable: MONGODB_URI (or MONGO_URI)');
 
-  const publicAppUrl =
-    read('FRONTEND_URL') || read('PUBLIC_APP_URL') || 'http://localhost:5174';
-  const corsOrigin = parseCorsOrigins(read('CORS_ORIGIN'));
-  if (Array.isArray(corsOrigin) && !corsOrigin.includes(publicAppUrl)) {
-    corsOrigin.push(publicAppUrl);
+  // On Vercel, fall back to the deployment's own HTTPS origin so Stripe
+  // redirects and password-reset links point at the live site when
+  // PUBLIC_APP_URL/FRONTEND_URL are not configured.
+  const vercelHosts = [
+    read('VERCEL_PROJECT_PRODUCTION_URL'),
+    read('VERCEL_BRANCH_URL'),
+    read('VERCEL_URL'),
+  ]
+    .filter(Boolean)
+    .map((host) => `https://${host.replace(/^https?:\/\//i, '').replace(/\/$/, '')}`);
+  const configuredAppUrl = (read('FRONTEND_URL') || read('PUBLIC_APP_URL') || '').replace(
+    /\/$/,
+    '',
+  );
+  // A localhost value copied from .env must not leak into a Vercel deployment.
+  const configuredIsLocalhost =
+    /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i.test(configuredAppUrl);
+  const preferredAppUrl =
+    configuredAppUrl && !(process.env.VERCEL && configuredIsLocalhost)
+      ? configuredAppUrl
+      : vercelHosts[0];
+  const publicAppUrl = (
+    preferredAppUrl ||
+    configuredAppUrl ||
+    'http://localhost:5174'
+  ).replace(/\/$/, '');
+
+  // An explicit CORS_ORIGIN (including "*") is honoured. When it is omitted,
+  // default to the public app origin instead of silently allowing every origin.
+  const corsOrigin = read('CORS_ORIGIN')
+    ? parseCorsOrigins(read('CORS_ORIGIN'))
+    : [publicAppUrl];
+  if (Array.isArray(corsOrigin)) {
+    // Always allow this deployment's own production/preview origins. These are
+    // Vercel-provided values, never user input, so this does not broaden CORS
+    // to arbitrary sites.
+    for (const origin of [publicAppUrl, ...vercelHosts]) {
+      if (!corsOrigin.includes(origin)) corsOrigin.push(origin);
+    }
   }
 
   const env = {

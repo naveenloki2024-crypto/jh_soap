@@ -1,6 +1,5 @@
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
-import { unlink } from 'node:fs/promises';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
 let mongo;
@@ -280,7 +279,12 @@ test('admin uploads an image and attaches it to the existing product', async () 
   });
   const uploaded = await uploadResponse.json();
   assert.equal(uploadResponse.status, 201, JSON.stringify(uploaded));
-  assert.match(uploaded.url, /^\/uploads\/.+\.png$/);
+  assert.match(uploaded.url, /^\/api\/uploads\/.+\.png$/);
+
+  const imageResponse = await fetch(`${baseUrl}${uploaded.url.slice('/api'.length)}`);
+  assert.equal(imageResponse.status, 200);
+  assert.equal(imageResponse.headers.get('content-type'), 'image/png');
+  assert.deepEqual(Buffer.from(await imageResponse.arrayBuffer()), png);
 
   const updated = await request('/products/vetiver', {
     method: 'PUT',
@@ -298,10 +302,6 @@ test('admin uploads an image and attaches it to the existing product', async () 
   assert.equal(adminList.response.status, 200, JSON.stringify(adminList.data));
   assert.equal(adminList.data.products[0].imageUrl, uploaded.url);
   assert.equal(adminList.data.products[0].productId, updated.data.product.productId);
-
-  await unlink(new URL(`../uploads/${uploaded.url.split('/').pop()}`, import.meta.url)).catch(
-    () => {},
-  );
 });
 
 test('hero content is public to read, admin-only to edit, and restorable', async () => {
@@ -330,10 +330,10 @@ test('hero content is public to read, admin-only to edit, and restorable', async
       headingHighlight: 'Handmade Soaps',
       subtitle: 'HERBS FROM NATURE',
       description: 'A fresh hero description managed from the admin dashboard.',
-      backgroundImage: '/uploads/background.webp',
-      productImage: '/uploads/product.webp',
-      desktopBannerImage: '/uploads/desktop.webp',
-      mobileBannerImage: '/uploads/mobile.webp',
+      backgroundImage: '/api/uploads/background.webp',
+      productImage: '/api/uploads/product.webp',
+      desktopBannerImage: '/api/uploads/desktop.webp',
+      mobileBannerImage: '/api/uploads/mobile.webp',
       primaryButtonText: 'Shop the range',
       primaryButtonLink: '#shop',
       secondaryButtonText: 'Chat with us',
@@ -349,7 +349,7 @@ test('hero content is public to read, admin-only to edit, and restorable', async
   const published = await request('/hero');
   assert.equal(published.response.status, 200, JSON.stringify(published.data));
   assert.equal(published.data.hero.headingHighlight, 'Handmade Soaps');
-  assert.equal(published.data.hero.mobileBannerImage, '/uploads/mobile.webp');
+  assert.equal(published.data.hero.mobileBannerImage, '/api/uploads/mobile.webp');
 
   const hidden = await request('/admin/hero', {
     method: 'PUT',
